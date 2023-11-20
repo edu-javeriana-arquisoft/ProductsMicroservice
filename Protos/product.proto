@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package arquisoft.remote;
+
+option csharp_namespace = "Arquisoft.Remote";
+
+message Product {
+  int32 id = 1;
+  string supplier = 2;
+
+  string name = 10;
+  string category = 20;
+  optional string vendor = 30;
+  optional string image = 48;
+  int32 amount = 49;
+}
+
+message NoneRequest {
+  /* Has no fields */
+}
+
+message Int32Request {
+  int32 value = 1;
+}
+
+message StringRequest {
+  string value = 1;
+}
+
+message ProductsResponse {
+  repeated Product products = 1;
+}
+
+service ProductService {
+  rpc GetProductById(Int32Request) returns (Product);
+  rpc GetProductByName(StringRequest) returns (Product);
+  rpc GetProductsByCategory(StringRequest) returns (ProductsResponse);
+  rpc GetProductsByVendor(StringRequest) returns (ProductsResponse);
+  rpc GetAllProducts(NoneRequest) returns (ProductsResponse);
+}
