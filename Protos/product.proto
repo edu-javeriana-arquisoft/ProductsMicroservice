@@ -13,6 +13,7 @@ message Product {
   optional string vendor = 30;
   optional string image = 48;
   int32 amount = 49;
+  double price = 60;
 }
 
 message NoneRequest {
