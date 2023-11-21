@@ -16,26 +16,36 @@ message Product {
   double price = 60;
 }
 
-message NoneRequest {
+message NoneType {
   /* Has no fields */
 }
 
-message Int32Request {
+message Int32Type {
   int32 value = 1;
 }
 
-message StringRequest {
+message StringType {
   string value = 1;
+}
+
+message BooleanType {
+  bool value = 1;
 }
 
 message ProductsResponse {
   repeated Product products = 1;
 }
 
+message ProductRequest {
+  int32 id = 1;
+  string supplier = 2;
+}
+
 service ProductService {
-  rpc GetProductById(Int32Request) returns (Product);
-  rpc GetProductByName(StringRequest) returns (Product);
-  rpc GetProductsByCategory(StringRequest) returns (ProductsResponse);
-  rpc GetProductsByVendor(StringRequest) returns (ProductsResponse);
-  rpc GetAllProducts(NoneRequest) returns (ProductsResponse);
+  rpc GetProductById(Int32Type) returns (Product);
+  rpc GetProductByName(StringType) returns (Product);
+  rpc GetProductsByCategory(StringType) returns (ProductsResponse);
+  rpc GetProductsByVendor(StringType) returns (ProductsResponse);
+  rpc GetAllProducts(NoneType) returns (ProductsResponse);
+  rpc BuyProduct(ProductRequest) returns (BooleanType);
 }

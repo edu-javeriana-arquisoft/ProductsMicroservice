@@ -1,0 +1,61 @@
+version: "3"
+
+services:
+  supplier-database:
+    image: mysql:latest
+    restart: always
+
+    environment:
+      MYSQL_DATABASE: 'products'
+      MYSQL_USER: 'arquisoft'
+      MYSQL_PASSWORD: 'arquisoft'
+      MYSQL_ROOT_PASSWORD: 'arquisoft'
+
+    expose:
+      - '3306'
+
+    volumes:
+      - supplier-database:/var/lib/mysql
+
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 60s
+      retries: 10
+
+  remote-supplier:
+    build:
+      context: .
+      dockerfile: ./RemoteSupplier/Dockerfile
+      args:
+        - PORT=5901
+
+    expose:
+      - 5901
+
+    depends_on:
+      supplier-database:
+        condition: service_healthy
+
+    environment:
+      SupplierGuid: f9503a4d-d6ba-4a6e-b95c-068c71e5a6ea
+      Urls: http://remote-supplier:5901
+      ConnectionStrings__DatabaseConnection: Server=supplier-database;Port=3306;Database=products;User=arquisoft;Password=arquisoft;
+
+  products-microservice:
+
+    build:
+      context: .
+      dockerfile: ./ProductsMicroservice/Dockerfile
+      args:
+        - PORT=8051
+    
+    ports:
+      - 8051:8051
+    
+    environment:
+      Urls: http://products-microservice:8051
+      SuppliersRemote: http://remote-supplier:5901
+
+volumes:
+  supplier-database:

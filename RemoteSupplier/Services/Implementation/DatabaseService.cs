@@ -14,6 +14,31 @@ public class DatabaseService : IDatabaseService
 		_supplierGuid = Guid.Parse(configuration["SupplierGuid"]!);
 	}
 
+	public bool BuyProduct(int id, Guid supplier)
+	{
+		if (supplier != _supplierGuid)
+		{
+			return false;
+		}
+
+		var product = _dbContext.Products.SingleOrDefault(
+			e => e.Id == id && e.Supplier == supplier.ToString());
+
+		if (product is null)
+		{
+			return false;
+		}
+		else if (product.Amount <= 0)
+		{
+			return false;
+		}
+
+		product.Amount--;
+		_dbContext.SaveChanges();
+
+		return true;
+	}
+
 	public List<Product> GetAllProducts() => _dbContext.Products.ToList();
 
 	public Product? GetProductById(int id) => _dbContext.Products.SingleOrDefault(e => e.Id == id);
