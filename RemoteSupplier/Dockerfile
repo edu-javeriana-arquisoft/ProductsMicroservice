@@ -17,5 +17,6 @@ EXPOSE $PORT
 
 WORKDIR /Application/RemoteSupplier
 
-ENTRYPOINT ["./entrypoint.sh"]
+ENTRYPOINT ["/bin/bash"]
+CMD ["entrypoint.sh"]
 

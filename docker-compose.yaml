@@ -14,6 +14,9 @@ services:
     expose:
       - '3306'
 
+    networks:
+      - arqui
+
     volumes:
       - supplier-database:/var/lib/mysql
 
@@ -32,6 +35,9 @@ services:
 
     expose:
       - 5901
+
+    networks:
+      - arqui
 
     depends_on:
       supplier-database:
@@ -52,12 +58,19 @@ services:
     
     ports:
       - 8051:8051
+
+    networks:
+      - arqui
     
     environment:
       Urls: http://products-microservice:8051
       SuppliersRemote: http://remote-supplier:5901
-      eureka__client__serviceUrl: http://localhost:8761/eureka/
+      eureka__client__serviceUrl: http://eureka:8761/eureka/
       eureka__instance__port: 8051
 
 volumes:
   supplier-database:
+
+networks:
+  arqui:
+    name: arquisoft_network
